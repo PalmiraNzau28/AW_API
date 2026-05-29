@@ -13,14 +13,14 @@ return new class extends Migration
 {
     Schema::create('seguidores', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('seguidor_id')
+        $table->foreignId('seguidor_id') //cria uma chave estrangeira (seguidor_id) em seguidores ligada à tabela utilizadores (id)
               ->constrained('utilizadores')
-              ->onDelete('cascade');
+              ->onDelete('cascade'); // se utilizadores for apagado apaga automaticamente os registros relacionados a este na tabela seguidores (id)
         $table->foreignId('seguido_id')
               ->constrained('utilizadores')
               ->onDelete('cascade');
-        $table->timestamp('created_at')->nullable();
-        $table->unique(['seguidor_id', 'seguido_id']);
+        $table->timestamp('created_at')->nullable(); // cria automaticamente uma de duas colunas de data (created_at) que pode ser NULL/vazio
+        $table->unique(['seguidor_id', 'seguido_id']); // "estes dois campos juntos não podem repetir a mesma combinação na tabela"
     });
 }
 

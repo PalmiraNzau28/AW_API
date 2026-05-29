@@ -13,14 +13,14 @@ return new class extends Migration
 {
     Schema::create('comentarios', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('publicacao_id')
+        $table->foreignId('publicacao_id') //cria uma chave estrangeira (publicacao_id) em comentarios ligada à tabela publicacoes (id)
               ->constrained('publicacoes')
-              ->onDelete('cascade');
+              ->onDelete('cascade'); // se publicacoes for apagado apaga automaticamente os registros relacionados a este na tabela comentarios
         $table->foreignId('utilizador_id')
               ->constrained('utilizadores')
               ->onDelete('cascade');
         $table->text('texto');
-        $table->timestamps();
+        $table->timestamps(); // cria automaticamente duas colunas de data (created_at e updated_up)
     });
 }
 
