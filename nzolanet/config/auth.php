@@ -16,8 +16,13 @@ return [
     */
 
     'defaults' => [
+<<<<<<< HEAD
         'guard' => env('AUTH_GUARD', 'web'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+=======
+        'guard' => 'api',
+        'passwords' => 'utilizadores',
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
     ],
 
     /*
@@ -42,6 +47,13 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+<<<<<<< HEAD
+=======
+        'api' => [
+            'driver' => 'jwt',
+            'provider' => 'utilizadores',
+        ],
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
     ],
 
     /*
@@ -66,6 +78,13 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
+<<<<<<< HEAD
+=======
+        'utilizadores' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Utilizador::class,
+        ],
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
 
         // 'users' => [
         //     'driver' => 'database',
@@ -99,6 +118,15 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+<<<<<<< HEAD
+=======
+        'utilizadores' => [
+            'provider' => 'utilizadores',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
     ],
 
     /*

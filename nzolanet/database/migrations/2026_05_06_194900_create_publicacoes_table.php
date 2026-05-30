@@ -14,6 +14,7 @@ return new class extends Migration
 {
     Schema::create('publicacoes', function (Blueprint $table) {
         $table->id();
+<<<<<<< HEAD
         $table->foreignId('utilizador_id')
               ->constrained('utilizadores')
               ->onDelete('cascade');
@@ -21,6 +22,15 @@ return new class extends Migration
         $table->string('imagem', 255)->nullable();
         $table->string('video', 255)->nullable();
         $table->timestamps();
+=======
+        $table->foreignId('utilizador_id') //cria uma chave estrangeira (utilizador_id) em publicacoes ligada à tabela utilizadores (id)
+              ->constrained('utilizadores') 
+              ->onDelete('cascade'); // se utilizadores for apagado apaga automaticamente os registros relacionados a este na tabela publicacoes
+        $table->text('texto')->nullable(); // este campo pode ser NULL/vazio
+        $table->string('imagem', 255)->nullable();
+        $table->string('video', 255)->nullable();
+        $table->timestamps(); // cria automaticamente duas colunas de data (created_at e updated_up)
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
     });
 }
 

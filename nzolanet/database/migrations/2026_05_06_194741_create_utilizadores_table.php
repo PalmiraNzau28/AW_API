@@ -17,10 +17,17 @@ return new class extends Migration
         $table->string('username', 50)->unique();
         $table->string('email', 150)->unique();
         $table->string('password', 255);
+<<<<<<< HEAD
         $table->string('foto_perfil', 255)->nullable();
         $table->text('bio')->nullable();
         $table->boolean('perfil_privado')->default(0);
         $table->timestamps();
+=======
+        $table->string('foto_perfil', 255)->nullable(); // este campo pode ser NULL/vazio
+        $table->text('bio')->nullable();
+        $table->boolean('perfil_privado')->default(0);
+        $table->timestamps(); // cria automaticamente duas colunas de data (created_at e updated_up)
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
     });
 }
 

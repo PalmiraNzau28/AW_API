@@ -11,7 +11,12 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
+<<<<<<< HEAD
         "laravel/tinker": "^2.10.1"
+=======
+        "laravel/tinker": "^2.10.1",
+        "tymon/jwt-auth": "^2.3"
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -87,4 +92,8 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
