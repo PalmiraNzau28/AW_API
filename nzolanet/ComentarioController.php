@@ -8,12 +8,10 @@ use Illuminate\Http\JsonResponse;
 
 class ComentarioController extends Controller
 {
-    // O Controller depende do Service
     public function __construct(
         private ComentarioService $service
     ) {}
 
-    // GET /api/publicacoes/{publicacao_id}/comentarios
     public function index(int $publicacao_id): JsonResponse
     {
         $comentarios = $this->service->listarPorPublicacao($publicacao_id);
@@ -24,10 +22,8 @@ class ComentarioController extends Controller
         ], 200);
     }
 
-    // POST /api/publicacoes/{publicacao_id}/comentarios
     public function store(Request $request, int $publicacao_id): JsonResponse
     {
-        // Valida os dados recebidos
         $dados = $request->validate([
             'texto'         => 'required|string|min:1|max:500',
             'utilizador_id' => 'required|integer|exists:utilizadores,id',
@@ -36,16 +32,14 @@ class ComentarioController extends Controller
         $comentario = $this->service->criar($dados, $publicacao_id, $dados['utilizador_id']);
 
         return response()->json([
-            'success'  => true,
-            'message'  => 'Comentário criado com sucesso.',
-            'data'     => $comentario,
+            'success' => true,
+            'message' => 'Comentário criado com sucesso.',
+            'data'    => $comentario,
         ], 201);
     }
 
-    // PUT /api/comentarios/{id}
     public function update(Request $request, int $id): JsonResponse
     {
-        // Valida os dados recebidos
         $dados = $request->validate([
             'texto'         => 'required|string|min:1|max:500',
             'utilizador_id' => 'required|integer|exists:utilizadores,id',
@@ -74,7 +68,6 @@ class ComentarioController extends Controller
         ], 200);
     }
 
-    // DELETE /api/comentarios/{id}
     public function destroy(Request $request, int $id): JsonResponse
     {
         $utilizador_id = $request->input('utilizador_id');
