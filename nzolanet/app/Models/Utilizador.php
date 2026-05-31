@@ -63,14 +63,15 @@ class Utilizador extends Authenticatable implements JWTSubject // permite ao mod
         return $this->hasMany(Baze::class, 'utilizador_id');
     }
 
+
     public function seguidores()
     {
         return $this->belongsToMany(
             Utilizador::class,
-            'seguidores', // tabela intermediária guarda os dados da relação entre seguido_id e seguidor_id
+            'seguidores',
             'seguido_id',
             'seguidor_id'
-        );
+        )->withPivot('created_at');
     }
 
     public function seguindo()
@@ -80,11 +81,22 @@ class Utilizador extends Authenticatable implements JWTSubject // permite ao mod
             'seguidores',
             'seguidor_id',
             'seguido_id'
-        );
+        )->withPivot('created_at');
     }
 
     public function notificacoes()
     {
         return $this->hasMany(Notificacao::class, 'utilizador_id');
     }
+
+
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = 'http://localhost:4200/reset-password?token=' . $token . '&email=' . $this->email;
+
+        $this->notify(new \App\Notifications\ResetPasswordNotification($url));
+    }
+
+
 }
