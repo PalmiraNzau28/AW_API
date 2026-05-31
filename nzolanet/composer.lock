@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
+    "content-hash": "a59389decc3f6069f384f7a80bf3f0f9",
+=======
     "content-hash": "07623b9de6aafafc5400e05a80fdb538",
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
     "packages": [
         {
             "name": "brick/math",
@@ -1462,6 +1466,8 @@
             "time": "2026-02-06T14:12:35+00:00"
         },
         {
+<<<<<<< HEAD
+=======
             "name": "lcobucci/clock",
             "version": "2.3.0",
             "source": {
@@ -1602,6 +1608,7 @@
             "time": "2021-09-28T19:18:28+00:00"
         },
         {
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
             "name": "league/commonmark",
             "version": "2.8.2",
             "source": {
@@ -3436,6 +3443,8 @@
             "time": "2025-12-14T04:43:48+00:00"
         },
         {
+<<<<<<< HEAD
+=======
             "name": "stella-maris/clock",
             "version": "0.1.7",
             "source": {
@@ -3483,6 +3492,7 @@
             "time": "2022-11-25T16:15:06+00:00"
         },
         {
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
             "name": "symfony/clock",
             "version": "v7.4.8",
             "source": {
@@ -6047,6 +6057,8 @@
             "time": "2025-12-02T11:56:42+00:00"
         },
         {
+<<<<<<< HEAD
+=======
             "name": "tymon/jwt-auth",
             "version": "2.3.0",
             "source": {
@@ -6125,6 +6137,7 @@
             "time": "2026-03-06T09:50:45+00:00"
         },
         {
+>>>>>>> 2a85dbadae3410ad595aaac69ed606fa6335e014
             "name": "vlucas/phpdotenv",
             "version": "v5.6.3",
             "source": {
