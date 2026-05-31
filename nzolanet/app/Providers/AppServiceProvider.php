@@ -3,17 +3,13 @@
 namespace App\Providers;
 
 use App\Repositories\AuthRepository;
+use App\Repositories\ComentarioRepository;
 use App\Repositories\Interfaces\AuthRepositoryInterface;
-use App\Repositories\Interfaces\SeguidorRepositoryInterface;
-use App\Repositories\SeguidorRepository;
+use App\Repositories\Interfaces\ComentarioRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     */
-
     public function register(): void
     {
         $this->app->bind(
@@ -22,8 +18,8 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            SeguidorRepositoryInterface::class,
-            SeguidorRepository::class,
+            ComentarioRepositoryInterface::class,
+            ComentarioRepository::class,
         );
     }
 

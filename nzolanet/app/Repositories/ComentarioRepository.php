@@ -3,8 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\Comentario;
+use App\Repositories\ComentarioRepositoryInterface;
+use App\Models\Publicacao;
 
-class ComentarioRepository
+class ComentarioRepository implements ComentarioRepositoryInterface
 {
     // Busca todos os comentários de uma publicação
     public function listarPorPublicacao(int $publicacao_id)
@@ -13,6 +15,10 @@ class ComentarioRepository
             ->where('publicacao_id', $publicacao_id)
             ->orderBy('created_at', 'asc')
             ->get();
+    }
+
+    public function buscarPublicacao(int $publicacao_id): ?Publicacao{
+        return Publicacao::find($publicacao_id);
     }
 
     // Busca um comentário pelo ID
