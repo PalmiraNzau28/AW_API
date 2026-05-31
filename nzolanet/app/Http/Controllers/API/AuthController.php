@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Services\PasswordResetService;
+
 use App\DTOs\LoginDTO; // Login há dados transferidos
 use App\DTOs\RegisterDTO;
 use App\DTOs\UpdatePerfilDTO;
@@ -96,4 +100,33 @@ class AuthController extends Controller
             'utilizador' => $utilizador,
         ], 200);
     }
+
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        $service   = new PasswordResetService();
+        $resultado = $service->enviarLinkRecuperacao($request->email);
+
+        $codigo = $resultado['sucesso'] ? 200 : 500;
+
+        return response()->json([
+            'message' => $resultado['mensagem'],
+        ], $codigo);
+    }
+
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        $service   = new PasswordResetService();
+        $resultado = $service->resetPassword(
+            $request->token,
+            $request->email,
+            $request->password
+        );
+
+        $codigo = $resultado['sucesso'] ? 200 : 422;
+
+        return response()->json([
+            'message' => $resultado['mensagem'],
+        ], $codigo);
+    }
+
 }
