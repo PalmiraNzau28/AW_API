@@ -1,19 +1,30 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\ComentarioController;
+use Illuminate\Support\Facades\Route;
 
-return Application::configure(basePath: dirname(__DIR__))
-    ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
-        health: '/up',
-    )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
-    })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
-    })->create();
+// Rotas publicas
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login',    [AuthController::class, 'login']);
+});
+
+// Rotas protegidas
+Route::middleware('auth:api')->group(function () {
+
+    Route::prefix('auth')->group(function () {
+        Route::post('/logout',      [AuthController::class, 'logout']);
+        Route::post('/refresh',     [AuthController::class, 'refresh']);
+        Route::get('/me',           [AuthController::class, 'me']);
+        Route::put('/perfil',       [AuthController::class, 'updatePerfil']);
+        Route::post('/foto-perfil', [AuthController::class, 'updateFotoPerfil']);
+    });
+
+    // Rotas de Comentarios
+    Route::get('/publicacoes/{publicacao_id}/comentarios',  [ComentarioController::class, 'index']);
+    Route::post('/publicacoes/{publicacao_id}/comentarios', [ComentarioController::class, 'store']);
+    Route::put('/comentarios/{id}',                         [ComentarioController::class, 'update']);
+    Route::delete('/comentarios/{id}',                      [ComentarioController::class, 'destroy']);
+
+});
