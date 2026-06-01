@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Comentario;
-use App\Repositories\ComentarioRepositoryInterface;
+use App\Repositories\Interfaces\ComentarioRepositoryInterface;
 use App\Models\Publicacao;
 
 class ComentarioRepository implements ComentarioRepositoryInterface
