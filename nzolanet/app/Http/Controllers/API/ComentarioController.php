@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Comentario\CreateComentarioRequest;
-use App\Http\Requests\Comentario\UpdateComentarioRequest;
 use App\Services\ComentarioService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\API\ComentarioController;
 
 class ComentarioController extends Controller
 {
@@ -16,7 +12,6 @@ class ComentarioController extends Controller
         private ComentarioService $service
     ) {}
 
-    // GET /api/publicacoes/{publicacao_id}/comentarios
     public function index(int $publicacao_id): JsonResponse
     {
         $comentarios = $this->service->listarPorPublicacao($publicacao_id);
@@ -27,16 +22,14 @@ class ComentarioController extends Controller
         ], 200);
     }
 
-    // POST /api/publicacoes/{publicacao_id}/comentarios
-    public function store(CreateComentarioRequest $request, int $publicacao_id): JsonResponse
+    public function store(Request $request, int $publicacao_id): JsonResponse
     {
-        $utilizador_id = auth()->id();
+        $dados = $request->validate([
+            'texto'         => 'required|string|min:1|max:500',
+            'utilizador_id' => 'required|integer|exists:utilizadores,id',
+        ]);
 
-        $comentario = $this->service->criar(
-            $request->validated(),
-            $publicacao_id,
-            $utilizador_id
-        );
+        $comentario = $this->service->criar($dados, $publicacao_id, $dados['utilizador_id']);
 
         return response()->json([
             'success' => true,
@@ -45,16 +38,14 @@ class ComentarioController extends Controller
         ], 201);
     }
 
-    // PUT /api/comentarios/{id}
-    public function update(UpdateComentarioRequest $request, int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
-        $utilizador_id = auth()->id();
+        $dados = $request->validate([
+            'texto'         => 'required|string|min:1|max:500',
+            'utilizador_id' => 'required|integer|exists:utilizadores,id',
+        ]);
 
-        $resultado = $this->service->actualizar(
-            $id,
-            $request->validated(),
-            $utilizador_id
-        );
+        $resultado = $this->service->actualizar($id, $dados, $dados['utilizador_id']);
 
         if ($resultado === 'nao_encontrado') {
             return response()->json([
@@ -77,10 +68,9 @@ class ComentarioController extends Controller
         ], 200);
     }
 
-    // DELETE /api/comentarios/{id}
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request, int $id): JsonResponse
     {
-        $utilizador_id = auth()->id();
+        $utilizador_id = $request->input('utilizador_id');
 
         $resultado = $this->service->apagar($id, $utilizador_id);
 
