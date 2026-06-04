@@ -42,10 +42,10 @@ O **NzolaNet** é uma plataforma de rede social que permite aos utilizadores pub
 - [ ] Visualizar publicações em ordem cronológica
 
 ### Gestão de Comentários
-- [ ] Adicionar comentários
-- [ ] Editar comentários próprios
-- [ ] Eliminar comentários próprios
-- [ ] Listar comentários por publicação
+- [x] Adicionar comentários
+- [x] Editar comentários próprios
+- [x] Eliminar comentários próprios
+- [x] Listar comentários por publicação
 
 ### Bazes
 - [ ] Dar baze numa publicação
