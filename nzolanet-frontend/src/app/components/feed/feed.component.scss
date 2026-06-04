@@ -1,0 +1,11 @@
+.feed-container {
+  max-width: 672px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}

@@ -1,0 +1,26 @@
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>NzolaNet</h1>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (item of menuItems; track item.id) {
+    <button appRipple class="nav-item" [class.active]="currentView === item.id" (click)="viewChange.emit(item.id)">
+      <lucide-icon [img]="getIcon(item.iconName)" [size]="24"></lucide-icon>
+      <span>{{ item.label }}</span>
+    </button>
+    }
+
+    <button appRipple class="nav-item" (click)="createPost.emit()">
+      <lucide-icon [img]="PlusSquareIcon" [size]="24"></lucide-icon>
+      <span>Criar</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button appRipple class="nav-item">
+      <lucide-icon [img]="MenuIcon" [size]="24"></lucide-icon>
+      <span>Menu</span>
+    </button>
+  </div>
+</aside>

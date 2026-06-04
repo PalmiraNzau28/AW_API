@@ -1,0 +1,150 @@
+.post-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.post-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.username {
+  font-weight: 500;
+  margin: 0;
+}
+
+.post-image-wrap {
+  aspect-ratio: 1;
+  background: var(--muted);
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.post-body {
+  padding: 1rem;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.actions-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground);
+  transition: color 150ms;
+  padding: 4px;
+  border-radius: 50%;
+
+  &:hover {
+    color: var(--muted-foreground);
+  }
+
+  &.liked {
+    color: #ef4444;
+    lucide-icon svg { fill: currentColor; }
+  }
+}
+
+.likes-count {
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+
+.post-caption-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  p { margin: 0; }
+}
+
+.bold { font-weight: 500; margin-right: 0.5rem; }
+
+.text-muted {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+
+  &:hover { color: var(--foreground); }
+}
+
+.comment-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+  p { margin: 0; }
+}
+
+.timestamp {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  margin: 0.5rem 0 0;
+}
+
+.comment-form {
+  border-top: 1px solid var(--border);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.comment-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--foreground);
+
+  &::placeholder { color: var(--muted-foreground); }
+}
+
+.publish-btn {
+  color: #3b82f6;
+  font-weight: 500;
+  background: none;
+  border: none;
+
+  &:hover { color: #2563eb; }
+}
