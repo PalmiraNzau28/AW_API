@@ -1,0 +1,58 @@
+<article class="post-card">
+  <!-- Header -->
+  <div class="post-header">
+    <div class="post-user">
+      <img [src]="avatarUrl" [alt]="publicacao.utilizador?.username ?? 'utilizador'" class="avatar" />
+      <p class="username">{{ publicacao.utilizador?.username ?? 'desconhecido' }}</p>
+    </div>
+    <button appRipple class="icon-btn">
+      <lucide-icon [img]="MoreHorizontalIcon" [size]="24"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- Imagem -->
+  @if (publicacao.imagem) {
+    <div class="post-image-wrap">
+      <img [src]="imagemUrl" alt="Publicação" class="post-image" />
+    </div>
+  }
+
+  <!-- Corpo -->
+  <div class="post-body">
+    <div class="post-actions">
+      <div class="actions-left">
+        <button appRipple class="icon-btn">
+          <lucide-icon [img]="HeartIcon" [size]="28"></lucide-icon>
+        </button>
+        <button appRipple class="icon-btn">
+          <lucide-icon [img]="MessageCircleIcon" [size]="28"></lucide-icon>
+        </button>
+      </div>
+    </div>
+
+    @if (texto) {
+      <div class="post-caption-area">
+        <p>
+          <span class="bold">{{ publicacao.utilizador?.username }}</span>
+          {{ texto }}
+        </p>
+      </div>
+    }
+
+    <p class="timestamp">{{ publicacao.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
+  </div>
+
+  <!-- Comentário -->
+  <div class="comment-form">
+    <input
+      type="text"
+      placeholder="Adicione um comentário..."
+      [(ngModel)]="commentText"
+      (keyup.enter)="handleSubmitComment()"
+      class="comment-input"
+    />
+    @if (commentText.trim()) {
+      <button class="publish-btn" (click)="handleSubmitComment()">Publicar</button>
+    }
+  </div>
+</article>

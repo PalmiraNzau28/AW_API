@@ -3,5 +3,5 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->away(env('FRONTEND_URL', 'http://localhost:4200'));
 });

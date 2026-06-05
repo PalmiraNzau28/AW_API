@@ -1,0 +1,104 @@
+<section class="auth-shell">
+  <div class="auth-panel">
+    <div class="brand">
+      <p class="eyebrow">NzolaNet</p>
+      <h1>{{ mode === 'login' ? 'Entrar na tua conta' : 'Criar conta' }}</h1>
+      <p class="supporting">
+        {{ mode === 'login'
+          ? 'Acede ao feed, publica e acompanha as tuas interacções.'
+          : 'Abre a tua conta e começa a usar a plataforma.' }}
+      </p>
+    </div>
+
+    <div class="mode-switch" role="tablist" aria-label="Autenticação">
+      <button appRipple type="button" class="mode-btn" [class.active]="mode === 'login'" (click)="setMode('login')">
+        <lucide-icon [img]="LogInIcon" [size]="18"></lucide-icon>
+        <span>Login</span>
+      </button>
+      <button appRipple type="button" class="mode-btn" [class.active]="mode === 'register'" (click)="setMode('register')">
+        <lucide-icon [img]="UserPlusIcon" [size]="18"></lucide-icon>
+        <span>Cadastro</span>
+      </button>
+    </div>
+
+    @if (erro) {
+      <div class="error-banner">{{ erro }}</div>
+    }
+
+    @if (mode === 'login') {
+      <form class="auth-form" (ngSubmit)="entrar()">
+        <label>
+          <span>Email</span>
+          <div class="field">
+            <lucide-icon [img]="MailIcon" [size]="18"></lucide-icon>
+            <input type="email" name="email" [(ngModel)]="loginForm.email" autocomplete="email" required />
+          </div>
+        </label>
+
+        <label>
+          <span>Senha</span>
+          <div class="field">
+            <lucide-icon [img]="LockIcon" [size]="18"></lucide-icon>
+            <input type="password" name="password" [(ngModel)]="loginForm.password" autocomplete="current-password" required />
+          </div>
+        </label>
+
+        <button appRipple class="submit-btn" type="submit" [disabled]="carregando">
+          {{ carregando ? 'A entrar...' : 'Entrar' }}
+        </button>
+      </form>
+    } @else {
+      <form class="auth-form" (ngSubmit)="registar()">
+        <label>
+          <span>Nome</span>
+          <div class="field">
+            <lucide-icon [img]="UserIcon" [size]="18"></lucide-icon>
+            <input type="text" name="nome" [(ngModel)]="registerForm.nome" autocomplete="name" required />
+          </div>
+        </label>
+
+        <label>
+          <span>Username</span>
+          <div class="field">
+            <lucide-icon [img]="UserIcon" [size]="18"></lucide-icon>
+            <input type="text" name="username" [(ngModel)]="registerForm.username" autocomplete="username" required />
+          </div>
+        </label>
+
+        <label>
+          <span>Email</span>
+          <div class="field">
+            <lucide-icon [img]="MailIcon" [size]="18"></lucide-icon>
+            <input type="email" name="email" [(ngModel)]="registerForm.email" autocomplete="email" required />
+          </div>
+        </label>
+
+        <label>
+          <span>Senha</span>
+          <div class="field">
+            <lucide-icon [img]="LockIcon" [size]="18"></lucide-icon>
+            <input type="password" name="password" [(ngModel)]="registerForm.password" autocomplete="new-password" required />
+          </div>
+        </label>
+
+        <label>
+          <span>Confirmar senha</span>
+          <div class="field">
+            <lucide-icon [img]="LockIcon" [size]="18"></lucide-icon>
+            <input
+              type="password"
+              name="password_confirmation"
+              [(ngModel)]="registerForm.password_confirmation"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+        </label>
+
+        <button appRipple class="submit-btn" type="submit" [disabled]="carregando">
+          {{ carregando ? 'A criar...' : 'Criar conta' }}
+        </button>
+      </form>
+    }
+  </div>
+</section>

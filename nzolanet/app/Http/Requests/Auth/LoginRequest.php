@@ -17,7 +17,7 @@ class LoginRequest extends FormRequest
             'email'    => [
                 'required',
                 'string',
-                'email:rfc,dns',
+                'email:rfc',
             ],
             'password' => [
                 'required',

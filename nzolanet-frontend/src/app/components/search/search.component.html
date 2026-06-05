@@ -1,0 +1,52 @@
+<div class="search-container">
+  <div class="search-bar-wrap">
+    <lucide-icon [img]="SearchIcon" [size]="20" class="search-icon"></lucide-icon>
+    <input
+      type="text"
+      placeholder="Pesquisar utilizadores"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="pesquisar()"
+      class="search-input"
+    />
+    @if (searchQuery) {
+      <button class="clear-btn" (click)="searchQuery = ''">
+        <lucide-icon [img]="XIcon" [size]="20"></lucide-icon>
+      </button>
+    }
+  </div>
+
+  @if (semResultados) {
+    <p class="sem-resultados">Nenhum utilizador encontrado.</p>
+  }
+
+  @if (carregando) {
+    <p class="hint">A pesquisar...</p>
+  }
+
+  @if (erro) {
+    <p class="sem-resultados">{{ erro }}</p>
+  }
+
+  @if (!searchQuery) {
+    <p class="hint">Escreve um nome de utilizador para pesquisar.</p>
+  }
+
+  <!-- Resultados da API (quando a rota GET /api/utilizadores existir) -->
+  <div class="user-list">
+    @for (u of resultados; track u.id) {
+      <div class="user-row">
+        <div class="user-info">
+          <img
+            class="avatar"
+            [src]="avatarUrl(u)"
+            [alt]="u.username"
+          />
+          <div>
+            <p class="bold">{{ u.username }}</p>
+            <p class="muted">{{ u.nome }}</p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="notif-container">
+  <h2>Notificações</h2>
+
+  @if (carregando) {
+    <p class="muted">A carregar notificações...</p>
+  }
+
+  @if (erro) {
+    <p class="muted">{{ erro }}</p>
+  }
+
+  @if (!carregando && !erro && notificacoes.length === 0) {
+    <div class="empty-state" style="text-align:center; padding: 3rem; opacity:.5;">
+      <lucide-icon [img]="BellIcon" [size]="48"></lucide-icon>
+      <p>Sem notificações por agora.</p>
+    </div>
+  }
+
+  <div class="notif-list">
+    @for (notificacao of notificacoes; track notificacao.id) {
+      <button class="notif-row" [class.unread]="!notificacao.lida" (click)="marcarComoLida(notificacao.id)">
+        <div class="notif-avatar-wrap">
+          <img
+            class="avatar"
+            [src]="notificacao.utilizador?.foto_perfil ?? 'https://ui-avatars.com/api/?name=' + (notificacao.utilizador?.username ?? 'N')"
+            [alt]="notificacao.utilizador?.username ?? 'utilizador'"
+          />
+          <div class="notif-icon-badge" [class.icon-comment]="notificacao.tipo === 'comentario' || notificacao.tipo === 'comment'" [class.icon-like]="notificacao.tipo === 'curtida' || notificacao.tipo === 'like'">
+            <lucide-icon [img]="icone(notificacao.tipo)" [size]="12"></lucide-icon>
+          </div>
+        </div>
+
+        <div class="notif-text">
+          <p class="bold">{{ notificacao.utilizador?.username ?? 'Sistema' }}</p>
+          <p>{{ notificacao.mensagem }}</p>
+          <p class="timestamp">{{ notificacao.created_at }}</p>
+        </div>
+      </button>
+    }
+  </div>
+</div>

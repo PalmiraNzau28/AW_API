@@ -1,0 +1,52 @@
+<div class="modal-overlay" (click)="closeModal.emit()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Criar nova publicação</h2>
+      <button class="icon-btn" (click)="closeModal.emit()">
+        <lucide-icon [img]="XIcon" [size]="24"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      @if (!selectedImage) {
+        <div class="empty-state">
+          <lucide-icon [img]="ImageIcon" [size]="96" class="empty-icon"></lucide-icon>
+          <p class="empty-text">Selecione fotos para partilhar</p>
+          <label class="select-btn">
+            <input type="file" accept="image/*" (change)="handleImageSelect($event)" hidden />
+            Selecionar do computador
+          </label>
+          @if (erro) {
+            <p class="erro-msg">{{ erro }}</p>
+          }
+        </div>
+      } @else {
+        <div class="preview-grid">
+          <div class="preview-image-wrap">
+            <img [src]="selectedImage" alt="Preview" class="preview-image" />
+          </div>
+          <div class="caption-area">
+            <textarea
+              placeholder="Escreva uma publicação..."
+              [(ngModel)]="texto"
+              rows="8"
+              class="caption-input"
+            ></textarea>
+            <div class="char-count">{{ texto.length }}/2200</div>
+            @if (erro) {
+              <p class="erro-msg">{{ erro }}</p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (selectedImage) {
+      <div class="modal-footer">
+        <button class="share-btn" (click)="handleSubmit()" [disabled]="enviando">
+          {{ enviando ? 'A publicar...' : 'Partilhar' }}
+        </button>
+      </div>
+    }
+  </div>
+</div>

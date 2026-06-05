@@ -1,139 +1,50 @@
-# NzolaNet 🌐
+# NzolaNet
 
-> Rede social académica desenvolvida como projecto da disciplina de Aplicações Web (AW).
+NzolaNet e uma aplicacao com backend Laravel e frontend Angular.
 
----
+- Backend: `nzolanet`
+- Frontend: `nzolanet-frontend`
+- API local: `http://localhost:8000/api`
+- Frontend local: `http://localhost:4200`
 
-## 📋 Índice
+## Funcionalidades ligadas
 
-- [Sobre o Projecto](#sobre-o-projecto)
-- [Funcionalidades](#funcionalidades)
-- [Stack Tecnológica](#stack-tecnológica)
-- [Arquitectura](#arquitectura)
-- [Requisitos](#requisitos)
-- [Instalação e Configuração](#instalação-e-configuração)
-- [Endpoints da API](#endpoints-da-api)
-- [Estrutura do Projecto](#estrutura-do-projecto)
-- [Base de Dados](#base-de-dados)
-- [Equipa](#equipa)
+- Login e cadastro com JWT.
+- Redirecionamento inicial do frontend para a tela de login/cadastro quando nao existe sessao.
+- Feed de publicacoes.
+- Criacao, edicao e remocao de publicacoes protegidas por autenticacao.
+- Comentarios protegidos por autenticacao, usando o utilizador do token em vez de `utilizador_id` enviado pelo cliente.
+- Pesquisa de utilizadores.
+- Notificacoes do utilizador autenticado.
+- Seguidores: seguir, deixar de seguir, listar seguidores e seguindo.
 
----
+## Requisitos
 
-## 📖 Sobre o Projecto
+- PHP 8.2 ou superior
+- Composer
+- Node.js e npm
+- MySQL ou outro banco configurado no `.env`
 
-O **NzolaNet** é uma plataforma de rede social que permite aos utilizadores publicarem conteúdos, interagirem através de **bazes** (reacções) e comentários, e manterem um perfil pessoal. O projecto foi desenvolvido seguindo boas práticas de engenharia de software, com arquitectura limpa, separação de responsabilidades e segurança na autenticação.
-
----
-
-## ✅ Funcionalidades
-
-### Gestão de Utilizadores
-- [x] Registo de novos utilizadores
-- [x] Autenticação com JWT
-- [x] Edição de perfil
-- [x] Alteração de foto de perfil
-- [ ] Seguir / Deixar de seguir utilizadores
-- [ ] Recuperação de senha
-
-### Gestão de Publicações
-- [ ] Criar publicações com texto, imagem e/ou vídeo
-- [ ] Editar publicações próprias
-- [ ] Eliminar publicações próprias
-- [ ] Visualizar publicações em ordem cronológica
-
-### Gestão de Comentários
-- [x] Adicionar comentários
-- [x] Editar comentários próprios
-- [x] Eliminar comentários próprios
-- [x] Listar comentários por publicação
-
-### Bazes
-- [ ] Dar baze numa publicação
-- [ ] Remover baze
-- [ ] Impedir bazes duplicadas do mesmo utilizador
-
-### Feed de Notícias
-- [ ] Feed principal com publicações recentes
-- [ ] Publicações de utilizadores seguidos
-- [ ] Ordenação cronológica
-
-### Notificações
-- [ ] Notificação ao receber baze
-- [ ] Notificação ao receber comentário
-- [ ] Notificação ao ganhar novo seguidor
-
----
-
-## 🛠️ Stack Tecnológica
-
-| Camada | Tecnologia | Versão |
-|--------|-----------|--------|
-| Frontend | Angular | 21.x |
-| Backend | PHP Laravel | 12.x |
-| Base de Dados | MySQL | 8.x |
-| Autenticação | JWT (tymon/jwt-auth) | 2.x |
-| Servidor Local | XAMPP | — |
-
----
-
-## 🏗️ Arquitectura
-
-O backend foi desenvolvido com uma arquitectura limpa em camadas:
-Request (HTTP)
-↓
-Controller  → recebe o pedido e devolve a resposta JSON
-↓
-Service     → contém toda a lógica de negócio
-↓
-Repository  → comunica com a base de dados
-↓
-Model       → representa a tabela na base de dados
-
-**Padrões utilizados:**
-- Repository Pattern
-- Service Layer
-- DTO (Data Transfer Object)
-- Interface Segregation
-
----
-
-## 📦 Requisitos
-
-Antes de começar, garante que tens instalado:
-
-- [PHP](https://www.php.net/) >= 8.2
-- [Composer](https://getcomposer.org/) >= 2.x
-- [Node.js](https://nodejs.org/) >= 20.x
-- [NPM](https://www.npmjs.com/) >= 10.x
-- [Angular CLI](https://angular.io/cli) >= 21.x
-- [XAMPP](https://www.apachefriends.org/) (MySQL + Apache)
-
----
-
-## ⚙️ Instalação e Configuração
-
-### 1. Clonar o repositório
+## Configurar o backend
 
 ```bash
-git clone https://github.com/seu-usuario/nzolanet.git
 cd nzolanet
-```
-
-### 2. Instalar dependências do backend
-
-```bash
 composer install
+copy .env.example .env
+php artisan key:generate
+php artisan jwt:secret
+php artisan migrate
+php artisan storage:link
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-### 3. Configurar o ficheiro de ambiente
-
-```bash
-cp .env.example .env
-```
-
-Edita o ficheiro `.env` com as tuas configurações:
+No `.env`, confirma pelo menos estes valores:
 
 ```env
+APP_URL=http://localhost:8000
+FRONTEND_URL=http://localhost:4200
+CORS_ALLOWED_ORIGINS=http://localhost:4200
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -142,100 +53,100 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 4. Gerar a chave da aplicação
+## Configurar o frontend
 
 ```bash
-php artisan key:generate
+cd nzolanet-frontend
+npm install
+npm start
 ```
 
-### 5. Gerar a chave JWT
+O frontend usa `src/environments/environment.ts`:
+
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8000/api'
+};
+```
+
+## Fluxo de autenticacao
+
+Ao abrir `http://localhost:4200`, a aplicacao verifica se existe token JWT no `localStorage`.
+
+- Sem token: mostra obrigatoriamente a tela de login/cadastro.
+- Com token valido: carrega o perfil e mostra o feed.
+- Com token invalido/expirado: remove a sessao local e volta para login/cadastro.
+
+O backend tambem redireciona `GET /` para `FRONTEND_URL`, para facilitar o arranque durante desenvolvimento.
+
+## Rotas principais da API
+
+Rotas publicas:
+
+```http
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/publicacoes
+GET  /api/publicacoes/{id}
+```
+
+Rotas protegidas por JWT:
+
+```http
+POST   /api/auth/logout
+GET    /api/auth/me
+POST   /api/auth/refresh
+PUT    /api/auth/perfil
+POST   /api/auth/foto-perfil
+
+POST   /api/publicacoes
+PUT    /api/publicacoes/{id}
+DELETE /api/publicacoes/{id}
+
+GET    /api/publicacoes/{publicacao_id}/comentarios
+POST   /api/publicacoes/{publicacao_id}/comentarios
+PUT    /api/comentarios/{id}
+DELETE /api/comentarios/{id}
+
+GET    /api/utilizadores/pesquisa?q=termo
+GET    /api/notificacoes
+POST   /api/notificacoes/{id}/ler
+
+POST   /api/utilizadores/{id}/seguir
+DELETE /api/utilizadores/{id}/seguir
+GET    /api/utilizadores/{id}/seguidores
+GET    /api/utilizadores/{id}/seguindo
+```
+
+## Validacao importante
+
+O backend valida os campos obrigatorios com Form Requests e valida o utilizador autenticado pelo JWT.
+
+- Cadastro exige `nome`, `username`, `email`, `password` e `password_confirmation`.
+- Login exige `email` e `password`.
+- Publicacao exige pelo menos `texto`, `imagem` ou `video`.
+- Comentario exige `texto`; o autor e sempre obtido pelo token.
+
+## Verificacao
+
+Com os dois servidores ativos:
+
+1. Abre `http://localhost:4200`.
+2. Confirma que a primeira tela e login/cadastro.
+3. Cria uma conta ou faz login.
+4. Testa criar publicacao, comentar, pesquisar utilizadores e abrir notificacoes.
+
+Para validar rotas no backend:
 
 ```bash
-php artisan jwt:secret
+cd nzolanet
+php artisan route:list --path=api
 ```
 
-### 6. Criar a base de dados
-
-Abre o phpMyAdmin em `http://localhost/phpmyadmin` e cria uma base de dados chamada `nzolanet`.
-
-### 7. Executar as migrations
+Para validar o build do frontend:
 
 ```bash
-php artisan migrate
+cd nzolanet-frontend
+npx ng build --configuration development --progress=false
 ```
-
-### 8. Criar o link simbólico para o storage
-
-```bash
-php artisan storage:link
-```
-
-### 9. Iniciar o servidor
-
-```bash
-php artisan serve
-```
-
-A API estará disponível em: `http://127.0.0.1:8000`
-
----
-
-## 🔌 Endpoints da API
-
-### Autenticação — Públicos
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `POST` | `/api/auth/register` | Registar novo utilizador |
-| `POST` | `/api/auth/login` | Login e obtenção de token JWT |
-
-### Autenticação — Protegidos 🔒
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/auth/me` | Ver dados do utilizador autenticado |
-| `PUT` | `/api/auth/perfil` | Editar perfil |
-| `POST` | `/api/auth/foto-perfil` | Actualizar foto de perfil |
-| `POST` | `/api/auth/logout` | Terminar sessão |
-| `POST` | `/api/auth/refresh` | Renovar token JWT |
-
-> 🔒 As rotas protegidas requerem o header: `Authorization: Bearer {token}`
-
----
-
-## 🗄️ Base de Dados
-
-O projecto utiliza **6 tabelas** no MySQL:
-
-| Tabela | Descrição |
-|--------|-----------|
-| `utilizadores` | Dados dos utilizadores registados |
-| `publicacoes` | Publicações criadas pelos utilizadores |
-| `comentarios` | Comentários nas publicações |
-| `bazes` | Reacções (likes) nas publicações |
-| `seguidores` | Relações de seguidor entre utilizadores |
-| `notificacoes` | Notificações geradas pelo sistema |
-
----
-
-## 👨‍💻 Equipa
-
-| Nome | Responsabilidade |
-|------|-----------------|
-| [Palmira Nzau] | Gestão de Utilizadores + Frontend |
-| [Florindo Albino] | Gestão de Publicações + Frontend |
-| [Josué Dosidiana] | Gestão de Comentários + Frontend |
-
----
-
-## 📄 Licença
-
-Este projecto foi desenvolvido para fins académicos no âmbito da disciplina de **Aplicações Web** do **Instituto Superior Politécnico de Tecnologias e Ciências**.
-
----
-
-<p align="center">
-  <i>May The Code Be With You 🚀</i>
-</p>
-
-

@@ -1,0 +1,50 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <img [src]="avatarUrl" [alt]="utilizador?.username ?? 'perfil'" class="profile-avatar" />
+
+    <div class="profile-info">
+      <div class="profile-title-row">
+        <h2>{{ utilizador?.username ?? '—' }}</h2>
+        <button appRipple class="edit-btn">Editar perfil</button>
+        <button appRipple class="icon-btn">
+          <lucide-icon [img]="SettingsIcon" [size]="24"></lucide-icon>
+        </button>
+      </div>
+
+      <div class="stats-row">
+        <div><span class="bold">{{ publicacoes.length }}</span> publicações</div>
+      </div>
+
+      <div class="bio">
+        <p class="bold">{{ utilizador?.nome ?? '' }}</p>
+        @if (utilizador?.bio) {
+          <p class="muted">{{ utilizador?.bio }}</p>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs-bar">
+    <button appRipple class="tab-btn active">
+      <lucide-icon [img]="GridIcon" [size]="20"></lucide-icon>
+      <span>Publicações</span>
+    </button>
+  </div>
+
+  @if (carregando) {
+    <p style="text-align:center; padding: 2rem;">A carregar...</p>
+  } @else {
+    <div class="posts-grid">
+      @for (pub of publicacoes; track pub.id) {
+        <div class="post-thumb">
+          <img [src]="imagemUrl(pub)" [alt]="'Publicação ' + pub.id" />
+        </div>
+      }
+      @if (publicacoes.length === 0) {
+        <p style="grid-column: 1/-1; text-align:center; padding: 2rem; opacity:.5;">
+          Ainda não tens publicações.
+        </p>
+      }
+    </div>
+  }
+</div>

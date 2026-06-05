@@ -1,0 +1,22 @@
+<div class="feed-container">
+  @if (carregando) {
+    <div class="feed-loading">
+      <p>A carregar publicações...</p>
+    </div>
+  }
+
+  @if (erro) {
+    <div class="feed-erro">
+      <p>{{ erro }}</p>
+    </div>
+  }
+
+  <div class="feed-list">
+    @for (pub of publicacoes; track pub.id) {
+      <app-post
+        [publicacao]="pub"
+        (addComment)="handleAddComment($event)"
+      ></app-post>
+    }
+  </div>
+</div>

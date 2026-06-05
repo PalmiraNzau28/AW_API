@@ -1,16 +1,16 @@
 <?php
 
 namespace App\DTOs;
-use Illuminate\Http\UploadedFile;
+
 
 class PublicacaoDTO
 {
 
   public function __construct(
     public readonly int $utilizador_id,
-    public readonly string $texto,
-    public readonly ?UploadedFile $imagem,
-    public readonly ?UploadedFile $video,
+    public readonly ?string $texto,
+    public readonly ?string $imagem,
+    public readonly ?string $video,
   ) {
   }
 

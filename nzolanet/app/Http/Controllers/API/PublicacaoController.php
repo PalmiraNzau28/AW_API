@@ -8,14 +8,8 @@ use App\Http\Requests\Publicacao\UpdatePublicacaoRequest;
 use App\Services\PublicacaoService;
 use Illuminate\Http\JsonResponse;
 
-// O Controller é a porta de entrada HTTP da aplicação.
-// A sua única responsabilidade é:
-//   1. Receber o pedido HTTP (já validado pelo FormRequest)
-//   2. Passar os dados ao Service
-//   3. Devolver a resposta JSON adequada
-//
-// O Controller NÃO contém lógica de negócio — isso fica no Service.
-// O Controller NÃO fala com a BD diretamente — isso fica no Repository.
+
+
 
 class PublicacaoController extends Controller
 {
@@ -24,7 +18,6 @@ class PublicacaoController extends Controller
   ) {
   }
 
-  // POST /api/publicacao
   // Cria uma nova publicação. Apenas utilizadores autenticados (middleware na rota).
   public function store(CreatePublicacaoRequest $request): JsonResponse
   {
