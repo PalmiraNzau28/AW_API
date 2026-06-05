@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, X, ImageIcon } from 'lucide-angular';
+import { LucideAngularModule, X, ImageIcon, Video } from 'lucide-angular';
 import { PublicacaoService } from '../../services/publicacao.service';
 
 @Component({
@@ -17,39 +17,56 @@ export class CreatePostComponent {
 
   readonly XIcon = X;
   readonly ImageIcon = ImageIcon;
+  readonly VideoIcon = Video;
 
-  selectedImage: string | null = null;
+  selectedPreview: string | null = null;
   selectedFile: File | null = null;
+  selectedMediaType: 'image' | 'video' | null = null;
   texto = '';
   enviando = false;
   erro: string | null = null;
   private readonly maxImageBytes = 5 * 1024 * 1024;
+  private readonly maxVideoBytes = 8 * 1024 * 1024;
 
   constructor(private publicacaoService: PublicacaoService) {}
 
-  handleImageSelect(event: Event): void {
+  handleMediaSelect(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      if (file.size > this.maxImageBytes) {
+      const isVideo = file.type.startsWith('video/');
+      const maxBytes = isVideo ? this.maxVideoBytes : this.maxImageBytes;
+      const maxLabel = isVideo ? '8MB' : '5MB';
+
+      if (file.size > maxBytes) {
         this.selectedFile = null;
-        this.selectedImage = null;
-        this.erro = 'A imagem não pode ter mais de 5MB.';
+        this.selectedPreview = null;
+        this.selectedMediaType = null;
+        this.erro = `O ficheiro não pode ter mais de ${maxLabel}.`;
         return;
       }
 
       this.erro = null;
       this.selectedFile = file;
+      this.selectedMediaType = isVideo ? 'video' : 'image';
       const reader = new FileReader();
-      reader.onloadend = () => { this.selectedImage = reader.result as string; };
+      reader.onloadend = () => { this.selectedPreview = reader.result as string; };
       reader.readAsDataURL(file);
     }
   }
 
   handleSubmit(): void {
-    if (!this.selectedFile) return;
+    if (!this.selectedFile && !this.texto.trim()) {
+      this.erro = 'A publicação deve ter texto, imagem ou vídeo.';
+      return;
+    }
 
     const formData = new FormData();
-    formData.append('imagem', this.selectedFile);
+    if (this.selectedFile && this.selectedMediaType === 'image') {
+      formData.append('imagem', this.selectedFile);
+    }
+    if (this.selectedFile && this.selectedMediaType === 'video') {
+      formData.append('video', this.selectedFile);
+    }
     if (this.texto.trim()) {
       formData.append('texto', this.texto);
     }

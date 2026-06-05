@@ -2,11 +2,15 @@
   <div class="auth-panel">
     <div class="brand">
       <p class="eyebrow">NzolaNet</p>
-      <h1>{{ mode === 'login' ? 'Entrar na tua conta' : 'Criar conta' }}</h1>
+      <h1>{{ mode === 'login' ? 'Entrar na tua conta' : mode === 'register' ? 'Criar conta' : mode === 'forgot' ? 'Recuperar senha' : 'Redefinir senha' }}</h1>
       <p class="supporting">
         {{ mode === 'login'
           ? 'Acede ao feed, publica e acompanha as tuas interacções.'
-          : 'Abre a tua conta e começa a usar a plataforma.' }}
+          : mode === 'register'
+            ? 'Abre a tua conta e começa a usar a plataforma.'
+            : mode === 'forgot'
+              ? 'Recebe as instruções de recuperação no teu email.'
+              : 'Define uma nova senha para voltar à tua conta.' }}
       </p>
     </div>
 
@@ -25,7 +29,62 @@
       <div class="error-banner">{{ erro }}</div>
     }
 
-    @if (mode === 'login') {
+    @if (sucesso) {
+      <div class="success-banner">{{ sucesso }}</div>
+    }
+
+    @if (mode === 'reset') {
+      <form class="auth-form" (ngSubmit)="redefinirSenha()">
+        <label>
+          <span>Email</span>
+          <div class="field">
+            <lucide-icon [img]="MailIcon" [size]="18"></lucide-icon>
+            <input type="email" name="reset_email" [(ngModel)]="resetForm.email" autocomplete="email" required />
+          </div>
+        </label>
+
+        <label>
+          <span>Nova senha</span>
+          <div class="field">
+            <lucide-icon [img]="LockIcon" [size]="18"></lucide-icon>
+            <input type="password" name="reset_password" [(ngModel)]="resetForm.password" autocomplete="new-password" required />
+          </div>
+        </label>
+
+        <label>
+          <span>Confirmar senha</span>
+          <div class="field">
+            <lucide-icon [img]="LockIcon" [size]="18"></lucide-icon>
+            <input
+              type="password"
+              name="reset_password_confirmation"
+              [(ngModel)]="resetForm.password_confirmation"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+        </label>
+
+        <button appRipple class="submit-btn" type="submit" [disabled]="carregando">
+          {{ carregando ? 'A guardar...' : 'Redefinir senha' }}
+        </button>
+      </form>
+    } @else if (mode === 'forgot') {
+      <form class="auth-form" (ngSubmit)="recuperarSenha()">
+        <label>
+          <span>Email</span>
+          <div class="field">
+            <lucide-icon [img]="MailIcon" [size]="18"></lucide-icon>
+            <input type="email" name="forgot_email" [(ngModel)]="loginForm.email" autocomplete="email" required />
+          </div>
+        </label>
+
+        <button appRipple class="submit-btn" type="submit" [disabled]="carregando">
+          {{ carregando ? 'A enviar...' : 'Enviar recuperação' }}
+        </button>
+        <button appRipple class="link-btn" type="button" (click)="setMode('login')">Voltar ao login</button>
+      </form>
+    } @else if (mode === 'login') {
       <form class="auth-form" (ngSubmit)="entrar()">
         <label>
           <span>Email</span>
@@ -46,6 +105,7 @@
         <button appRipple class="submit-btn" type="submit" [disabled]="carregando">
           {{ carregando ? 'A entrar...' : 'Entrar' }}
         </button>
+        <button appRipple class="link-btn" type="button" (click)="setMode('forgot')">Recuperar senha</button>
       </form>
     } @else {
       <form class="auth-form" (ngSubmit)="registar()">

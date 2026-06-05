@@ -21,7 +21,7 @@ class ResetPasswordRequest extends FormRequest
             'email'    => [
                 'required',
                 'string',
-                'email:rfc,dns',
+                'email:rfc',
                 'exists:utilizadores,email',
             ],
             'password' => [

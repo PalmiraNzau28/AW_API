@@ -46,6 +46,9 @@
             <p class="muted">{{ u.nome }}</p>
           </div>
         </div>
+        <button appRipple class="follow-btn" (click)="toggleSeguir(u)">
+          {{ u.seguindo ? 'A seguir' : 'Seguir' }}
+        </button>
       </div>
     }
   </div>

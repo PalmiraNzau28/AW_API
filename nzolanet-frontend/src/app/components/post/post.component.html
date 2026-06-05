@@ -1,36 +1,62 @@
 <article class="post-card">
-  <!-- Header -->
   <div class="post-header">
     <div class="post-user">
-      <img [src]="avatarUrl" [alt]="publicacao.utilizador?.username ?? 'utilizador'" class="avatar" />
+      <img [src]="avatarUrl" [alt]="publicacao.utilizador?.username ?? 'utilizador'" class="avatar" loading="lazy" decoding="async" />
       <p class="username">{{ publicacao.utilizador?.username ?? 'desconhecido' }}</p>
     </div>
-    <button appRipple class="icon-btn">
-      <lucide-icon [img]="MoreHorizontalIcon" [size]="24"></lucide-icon>
-    </button>
+    @if (podeGerirPublicacao) {
+      <div class="post-admin-actions">
+        <button appRipple class="icon-btn" (click)="iniciarEdicaoPublicacao()" title="Editar publicação">
+          <lucide-icon [img]="PencilIcon" [size]="20"></lucide-icon>
+        </button>
+        <button appRipple class="icon-btn danger" (click)="eliminarPublicacao()" title="Excluir publicação">
+          <lucide-icon [img]="TrashIcon" [size]="20"></lucide-icon>
+        </button>
+      </div>
+    }
   </div>
 
-  <!-- Imagem -->
   @if (publicacao.imagem) {
     <div class="post-image-wrap">
-      <img [src]="imagemUrl" alt="Publicação" class="post-image" />
+      <img [src]="imagemUrl" alt="Publicação" class="post-image" loading="lazy" decoding="async" />
     </div>
   }
 
-  <!-- Corpo -->
+  @if (publicacao.video) {
+    <div class="post-image-wrap">
+      <video [src]="videoUrl" class="post-video" controls preload="metadata"></video>
+    </div>
+  }
+
   <div class="post-body">
     <div class="post-actions">
       <div class="actions-left">
-        <button appRipple class="icon-btn">
+        <button appRipple class="icon-btn" [class.liked]="publicacao.bazado" (click)="toggleBaze()" title="Baze">
           <lucide-icon [img]="HeartIcon" [size]="28"></lucide-icon>
         </button>
-        <button appRipple class="icon-btn">
+        <button appRipple class="icon-btn" (click)="carregarComentarios()" title="Comentários">
           <lucide-icon [img]="MessageCircleIcon" [size]="28"></lucide-icon>
         </button>
       </div>
     </div>
 
-    @if (texto) {
+    <p class="likes-count">{{ publicacao.bazes_count ?? 0 }}</p>
+
+    @if (editandoPublicacao) {
+      <div class="edit-box">
+        <textarea [(ngModel)]="editTexto" rows="3" class="edit-input"></textarea>
+        <div class="inline-actions">
+          <button appRipple class="publish-btn" (click)="guardarPublicacao()">
+            <lucide-icon [img]="CheckIcon" [size]="16"></lucide-icon>
+            Guardar
+          </button>
+          <button appRipple class="muted-btn" (click)="editandoPublicacao = false">
+            <lucide-icon [img]="XIcon" [size]="16"></lucide-icon>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    } @else if (texto) {
       <div class="post-caption-area">
         <p>
           <span class="bold">{{ publicacao.utilizador?.username }}</span>
@@ -39,10 +65,52 @@
       </div>
     }
 
+    <button appRipple class="text-muted" (click)="carregarComentarios()">
+      Ver {{ comentariosLabel }}
+    </button>
+
     <p class="timestamp">{{ publicacao.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
+
+    @if (erro) {
+      <p class="erro-msg">{{ erro }}</p>
+    }
   </div>
 
-  <!-- Comentário -->
+  @if (comentariosVisiveis) {
+    <div class="comments-list">
+      @if (carregandoComentarios) {
+        <p class="text-muted">A carregar comentários...</p>
+      }
+
+      @for (comentario of comentarios; track comentario.id) {
+        <div class="comment-row">
+          @if (editandoComentarioId === comentario.id) {
+            <input class="comment-input" [(ngModel)]="editComentarioTexto" />
+            <button appRipple class="icon-btn" (click)="guardarComentario(comentario)">
+              <lucide-icon [img]="CheckIcon" [size]="18"></lucide-icon>
+            </button>
+            <button appRipple class="icon-btn" (click)="editandoComentarioId = null">
+              <lucide-icon [img]="XIcon" [size]="18"></lucide-icon>
+            </button>
+          } @else {
+            <p>
+              <span class="bold">{{ comentario.utilizador?.username ?? comentario.autor_nome ?? 'utilizador' }}</span>
+              {{ comentario.texto }}
+            </p>
+            @if (podeGerirComentario(comentario)) {
+              <button appRipple class="icon-btn" (click)="iniciarEdicaoComentario(comentario)">
+                <lucide-icon [img]="PencilIcon" [size]="16"></lucide-icon>
+              </button>
+              <button appRipple class="icon-btn danger" (click)="eliminarComentario(comentario)">
+                <lucide-icon [img]="TrashIcon" [size]="16"></lucide-icon>
+              </button>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+
   <div class="comment-form">
     <input
       type="text"

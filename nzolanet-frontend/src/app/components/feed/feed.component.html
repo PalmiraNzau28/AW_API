@@ -16,7 +16,12 @@
       <app-post
         [publicacao]="pub"
         (addComment)="handleAddComment($event)"
+        (deleted)="removerPublicacao($event)"
       ></app-post>
     }
   </div>
+
+  @if (!carregando && temMais) {
+    <button class="load-more" (click)="carregarMais()">Carregar mais</button>
+  }
 </div>

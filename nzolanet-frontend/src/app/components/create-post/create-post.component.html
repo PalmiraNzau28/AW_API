@@ -8,13 +8,19 @@
     </div>
 
     <div class="modal-body">
-      @if (!selectedImage) {
+      @if (!selectedPreview) {
         <div class="empty-state">
-          <lucide-icon [img]="ImageIcon" [size]="96" class="empty-icon"></lucide-icon>
-          <p class="empty-text">Selecione fotos para partilhar</p>
+          <lucide-icon [img]="ImageIcon" [size]="72" class="empty-icon"></lucide-icon>
+          <p class="empty-text">Escreva, selecione uma imagem ou um vídeo</p>
+          <textarea
+            placeholder="Escreva uma publicação..."
+            [(ngModel)]="texto"
+            rows="5"
+            class="caption-input standalone"
+          ></textarea>
           <label class="select-btn">
-            <input type="file" accept="image/*" (change)="handleImageSelect($event)" hidden />
-            Selecionar do computador
+            <input type="file" accept="image/*,video/*" (change)="handleMediaSelect($event)" hidden />
+            Selecionar media
           </label>
           @if (erro) {
             <p class="erro-msg">{{ erro }}</p>
@@ -23,7 +29,11 @@
       } @else {
         <div class="preview-grid">
           <div class="preview-image-wrap">
-            <img [src]="selectedImage" alt="Preview" class="preview-image" />
+            @if (selectedMediaType === 'video') {
+              <video [src]="selectedPreview" class="preview-image" controls></video>
+            } @else {
+              <img [src]="selectedPreview" alt="Preview" class="preview-image" />
+            }
           </div>
           <div class="caption-area">
             <textarea
@@ -41,7 +51,7 @@
       }
     </div>
 
-    @if (selectedImage) {
+    @if (selectedPreview || texto.trim()) {
       <div class="modal-footer">
         <button class="share-btn" (click)="handleSubmit()" [disabled]="enviando">
           {{ enviando ? 'A publicar...' : 'Partilhar' }}

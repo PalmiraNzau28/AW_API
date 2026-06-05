@@ -9,8 +9,11 @@ export interface Comentario {
   utilizador_id: number;
   texto: string;
   created_at: string;
+  autor_nome?: string;
+  autor_foto?: string;
   utilizador?: {
     id: number;
+    nome?: string;
     username: string;
     foto_perfil?: string;
   };

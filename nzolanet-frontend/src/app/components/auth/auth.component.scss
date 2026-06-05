@@ -74,6 +74,14 @@
   color: #fecaca;
 }
 
+.success-banner {
+  margin-bottom: 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, #22c55e 16%, transparent);
+  color: #bbf7d0;
+}
+
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -121,4 +129,10 @@
     opacity: 0.7;
     cursor: wait;
   }
+}
+
+.link-btn {
+  color: var(--muted-foreground);
+  padding: 0.35rem 0;
+  align-self: center;
 }

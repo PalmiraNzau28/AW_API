@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BazeController;
 use App\Http\Controllers\API\ComentarioController;
 use App\Http\Controllers\API\NotificacaoController;
 use App\Http\Controllers\API\UtilizadorController;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
 // Feed público — qualquer pessoa pode ver as publicações
@@ -38,13 +41,16 @@ Route::middleware('auth:api')->group(function () {
     // Rotas de Publicacoes
     Route::post('/publicacoes', [PublicacaoController::class, 'store']);
     Route::put('/publicacoes/{id}', [PublicacaoController::class, 'update']);
+    Route::post('/publicacoes/{id}', [PublicacaoController::class, 'update']);
     Route::delete('/publicacoes/{id}', [PublicacaoController::class, 'destroy']);
+    Route::post('/publicacoes/{publicacao_id}/baze', [BazeController::class, 'toggle']);
 
-    // Funcionalidades do frontend ligadas ao backend
+    // Rotas de notificação
     Route::get('/utilizadores/pesquisa', [UtilizadorController::class, 'search']);
     Route::get('/notificacoes', [NotificacaoController::class, 'index']);
     Route::post('/notificacoes/{id}/ler', [NotificacaoController::class, 'marcarComoLida']);
 
+    // Rotas de Seguidores
     Route::post('/utilizadores/{id}/seguir', [SeguidorController::class, 'seguir']);
     Route::delete('/utilizadores/{id}/seguir', [SeguidorController::class, 'deixarSeguir']);
     Route::get('/utilizadores/{id}/seguidores', [SeguidorController::class, 'seguidores']);

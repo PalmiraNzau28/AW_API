@@ -1,24 +1,42 @@
 <div class="profile-container">
   <div class="profile-header">
-    <img [src]="avatarUrl" [alt]="utilizador?.username ?? 'perfil'" class="profile-avatar" />
+    <label class="avatar-edit">
+      <img [src]="avatarUrl" [alt]="utilizador?.username ?? 'perfil'" class="profile-avatar" />
+      <input type="file" accept="image/*" (change)="atualizarFoto($event)" hidden />
+    </label>
 
     <div class="profile-info">
       <div class="profile-title-row">
         <h2>{{ utilizador?.username ?? '—' }}</h2>
-        <button appRipple class="edit-btn">Editar perfil</button>
+        <button appRipple class="edit-btn" (click)="iniciarEdicao()">Editar perfil</button>
         <button appRipple class="icon-btn">
           <lucide-icon [img]="SettingsIcon" [size]="24"></lucide-icon>
         </button>
       </div>
 
       <div class="stats-row">
-        <div><span class="bold">{{ publicacoes.length }}</span> publicações</div>
+        <div><span class="bold">{{ publicacoes.length }}</span> {{ publicacoesLabel }}</div>
       </div>
 
       <div class="bio">
-        <p class="bold">{{ utilizador?.nome ?? '' }}</p>
-        @if (utilizador?.bio) {
-          <p class="muted">{{ utilizador?.bio }}</p>
+        @if (editando) {
+          <div class="profile-form">
+            <input [(ngModel)]="perfilForm.nome" placeholder="Nome" />
+            <input [(ngModel)]="perfilForm.username" placeholder="Username" />
+            <textarea [(ngModel)]="perfilForm.bio" placeholder="Bio" rows="3"></textarea>
+            <div class="profile-actions">
+              <button appRipple class="edit-btn" (click)="guardarPerfil()">Guardar</button>
+              <button appRipple class="edit-btn muted-action" (click)="editando = false">Cancelar</button>
+            </div>
+          </div>
+        } @else {
+          <p class="bold">{{ utilizador?.nome ?? '' }}</p>
+          @if (utilizador?.bio) {
+            <p class="muted">{{ utilizador?.bio }}</p>
+          }
+        }
+        @if (erro) {
+          <p class="erro-msg">{{ erro }}</p>
         }
       </div>
     </div>

@@ -9,6 +9,7 @@ export interface UtilizadorResultado {
   username: string;
   foto_perfil?: string;
   bio?: string;
+  seguindo?: boolean;
 }
 
 export interface UtilizadoresResponse {

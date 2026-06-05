@@ -7,6 +7,7 @@ use App\Http\Requests\Publicacao\CreatePublicacaoRequest;
 use App\Http\Requests\Publicacao\UpdatePublicacaoRequest;
 use App\Services\PublicacaoService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 
 
@@ -18,11 +19,10 @@ class PublicacaoController extends Controller
   ) {
   }
 
-  // Cria uma nova publicação. Apenas utilizadores autenticados (middleware na rota).
+  // Cria uma nova publicação. Apenas utilizadores autenticados .
   public function store(CreatePublicacaoRequest $request): JsonResponse
   {
-    // $request->validated() devolve apenas os campos que passaram nas rules().
-    // $request->file('imagem') devolve o ficheiro uploaded, ou null se não foi enviado.
+    
     $publicacao = $this->publicacaoService->criar(
       dadosValidados: $request->validated(),
       imagem: $request->file('imagem'),
@@ -35,19 +35,25 @@ class PublicacaoController extends Controller
     ], 201); // 201 Created — indica que um novo recurso foi criado
   }
 
-  // GET /api/publicacoes
+
   // Feed público — lista todas as publicações do mais recente para o mais antigo.
-  public function index(): JsonResponse
+  public function index(Request $request): JsonResponse
   {
-    $publicacoes = $this->publicacaoService->listar();
+    $perPage = min(max((int) $request->query('per_page', 5), 1), 10);
+    $publicacoes = $this->publicacaoService->listar($perPage);
 
     return response()->json([
-      'publicacoes' => $publicacoes,
+      'publicacoes' => $publicacoes->items(),
+      'meta' => [
+        'current_page' => $publicacoes->currentPage(),
+        'per_page' => $publicacoes->perPage(),
+        'has_more' => $publicacoes->hasMorePages(),
+      ],
     ], 200);
   }
 
-  // GET /api/publicacoes/{id}
-  // Mostra uma publicação específica com os dados do autor, bazes e comentários.
+
+ 
   public function show(int $id): JsonResponse
   {
     $publicacao = $this->publicacaoService->ver($id);
@@ -63,7 +69,6 @@ class PublicacaoController extends Controller
     ], 200);
   }
 
-  // PUT /api/publicacoes/{id}
   // Edita uma publicação. Só o autor pode editar (verificado no Service).
   public function update(UpdatePublicacaoRequest $request, int $id): JsonResponse
   {
@@ -74,8 +79,6 @@ class PublicacaoController extends Controller
       video: $request->file('video'),
     );
 
-    // O Service devolve um array com 'erro' ou 'publicacao'.
-    // O Controller interpreta esse resultado e devolve o HTTP correto.
     if (isset($resultado['erro'])) {
       return match ($resultado['erro']) {
         'not_found' => response()->json(['message' => 'Publicação não encontrada.'], 404),
@@ -90,7 +93,7 @@ class PublicacaoController extends Controller
     ], 200);
   }
 
-  // DELETE /api/publicacoes/{id}
+
   // Elimina uma publicação. Só o autor pode eliminar (verificado no Service).
   public function destroy(int $id): JsonResponse
   {

@@ -10,6 +10,9 @@ export interface Publicacao {
   legenda?: string;
   imagem?: string;
   video?: string;
+  bazes_count?: number;
+  comentarios_count?: number;
+  bazado?: boolean;
   created_at: string;
   updated_at: string;
   utilizador?: {
@@ -22,6 +25,11 @@ export interface Publicacao {
 
 export interface PublicacoesResponse {
   publicacoes: Publicacao[];
+  meta?: {
+    current_page: number;
+    per_page: number;
+    has_more: boolean;
+  };
 }
 
 export interface PublicacaoResponse {
@@ -35,8 +43,13 @@ export class PublicacaoService {
 
   constructor(private http: HttpClient) {}
 
-  listar(): Observable<PublicacoesResponse> {
-    return this.http.get<PublicacoesResponse>(this.baseUrl);
+  listar(page = 1, perPage = 5): Observable<PublicacoesResponse> {
+    return this.http.get<PublicacoesResponse>(this.baseUrl, {
+      params: {
+        page,
+        per_page: perPage,
+      }
+    });
   }
 
   ver(id: number): Observable<PublicacaoResponse> {

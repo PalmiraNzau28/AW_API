@@ -27,6 +27,9 @@ class UtilizadorController extends Controller
         $utilizadores = Utilizador::query()
             ->select(['id', 'nome', 'username', 'foto_perfil', 'bio'])
             ->where('id', '!=', Auth::id())
+            ->withExists([
+                'seguidores as seguindo' => fn($q) => $q->where('seguidor_id', Auth::id()),
+            ])
             ->where(function ($query) use ($termo) {
                 $query->where('nome', 'like', '%' . $termo . '%')
                     ->orWhere('username', 'like', '%' . $termo . '%')

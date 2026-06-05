@@ -115,6 +115,15 @@
   font-size: 1rem;
 
   &::placeholder { color: var(--muted-foreground); }
+
+  &.standalone {
+    width: min(100%, 420px);
+    min-height: 120px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    padding: 0.85rem;
+  }
 }
 
 .char-count { color: var(--muted-foreground); font-size: 0.875rem; }

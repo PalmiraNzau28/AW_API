@@ -4,12 +4,14 @@ namespace App\Repositories;
 
 use App\DTOs\PublicacaoDTO;
 use App\DTOs\UpdatePublicacaoDTO;
+use App\Models\Baze;
+use App\Models\Comentario;
 use App\Models\Publicacao;
 use App\Repositories\Interfaces\PublicacaoRepositoryInterface;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-// Isto mantém o código organizado: BD ↔ Repository ↔ Service ↔ Controller ↔ HTTP
 
 class PublicacaoRepository implements PublicacaoRepositoryInterface
 {
@@ -18,34 +20,76 @@ class PublicacaoRepository implements PublicacaoRepositoryInterface
     return Publicacao::create([
       'utilizador_id' => $dto->utilizador_id,
       'texto' => $dto->texto,
-      'imagem' => $dto->imagem, // Path do ficheiro em storage/app/public/publicacoes/
+      'imagem' => $dto->imagem, 
       'video' => $dto->video,
     ]);
   }
 
-  public function getAll(): Collection
+  public function getAll(int $perPage = 5): Paginator
   {
-    // with('utilizador') → eager loading: carrega o autor de cada publicação
-
-    return Publicacao::with('utilizador')
-      ->withCount(['bazes', 'comentarios'])
+    $paginator = Publicacao::query()
+      ->select(['id', 'utilizador_id', 'texto', 'imagem', 'video', 'created_at', 'updated_at'])
+      ->with('utilizador:id,nome,username,foto_perfil')
       ->latest()
-      ->get();
+      ->simplePaginate($perPage);
+
+    $ids = $paginator->getCollection()->pluck('id');
+
+    if ($ids->isEmpty()) {
+      return $paginator;
+    }
+
+    $bazes = Baze::query()
+      ->selectRaw('publicacao_id, count(*) as total')
+      ->whereIn('publicacao_id', $ids)
+      ->groupBy('publicacao_id')
+      ->pluck('total', 'publicacao_id');
+
+    $comentarios = Comentario::query()
+      ->selectRaw('publicacao_id, count(*) as total')
+      ->whereIn('publicacao_id', $ids)
+      ->groupBy('publicacao_id')
+      ->pluck('total', 'publicacao_id');
+
+    $bazados = Auth::check()
+      ? Baze::query()
+        ->where('utilizador_id', Auth::id())
+        ->whereIn('publicacao_id', $ids)
+        ->pluck('publicacao_id')
+        ->flip()
+      : collect();
+
+    $paginator->setCollection(
+      $paginator->getCollection()->map(function (Publicacao $publicacao) use ($bazes, $comentarios, $bazados) {
+        $publicacao->setAttribute('bazes_count', (int) ($bazes[$publicacao->id] ?? 0));
+        $publicacao->setAttribute('comentarios_count', (int) ($comentarios[$publicacao->id] ?? 0));
+        $publicacao->setAttribute('bazado', $bazados->has($publicacao->id));
+
+        return $publicacao;
+      })
+    );
+
+    return $paginator;
   }
 
   public function findById(int $id): ?Publicacao
   {
-    // Carrega também o autor e as contagens para a visualização individual
-    return Publicacao::with('utilizador')
+    
+    return Publicacao::query()
+      ->select(['id', 'utilizador_id', 'texto', 'imagem', 'video', 'created_at', 'updated_at'])
+      ->with('utilizador:id,nome,username,foto_perfil')
       ->withCount(['bazes', 'comentarios'])
-      ->find($id); // find() devolve null se não encontrar (ao contrário de findOrFail que lança exceção)
+      ->when(Auth::check(), function ($query) {
+        $query->withExists([
+          'bazes as bazado' => fn($q) => $q->where('utilizador_id', Auth::id()),
+        ]);
+      })
+      ->find($id); 
   }
 
   public function update(Publicacao $publicacao, UpdatePublicacaoDTO $dto): Publicacao
   {
-    // array_filter com fn($v) => !is_null($v) → remove os campos que vieram como null
-    // do DTO. Assim, só atualizamos na BD os campos que o utilizador realmente enviou.
-    // Exemplo: se só enviou 'texto', só 'texto' é atualizado — imagem e vídeo mantêm-se.
+    
     $dados = array_filter([
       'texto' => $dto->texto,
       'imagem' => $dto->imagem,
@@ -54,15 +98,14 @@ class PublicacaoRepository implements PublicacaoRepositoryInterface
 
     $publicacao->update($dados);
 
-    // fresh() recarrega o objeto da BD, garantindo que devolvemos
-    // os dados mais recentes (incluindo timestamps atualizados).
+    
     return $publicacao->fresh();
   }
 
   public function delete(Publicacao $publicacao): void
   {
     // Apaga os ficheiros de media associados antes de eliminar o registo.
-    // Se não fizéssemos isto, os ficheiros ficariam "órfãos" no storage.
+    
     if ($publicacao->imagem) {
       Storage::disk('public')->delete($publicacao->imagem);
     }
@@ -71,8 +114,6 @@ class PublicacaoRepository implements PublicacaoRepositoryInterface
       Storage::disk('public')->delete($publicacao->video);
     }
 
-    // A migration tem onDelete('cascade'), por isso os comentários
-    // e bazes desta publicação são apagados automaticamente pela BD.
     $publicacao->delete();
   }
 }
